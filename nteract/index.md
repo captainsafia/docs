@@ -676,7 +676,37 @@ Let's break down the code that we have added here. We are taking advantage of on
 
 If we run our application again, you should be able to click `File > Open` and select a notebook from the `Open Dialog`.
 
-Once the user has selected a file, what do we do? We move on to Steps 2 and 3 of the list above. We will need a way to load the JSON from a file. To do this, let's create a new file
+Now, to help with debugging, we will need to add another menu element to bring back the
+`Toggle Developer Tools` menu. We'll do this by adding a `View` menu item similar to the `File`
+menu item that we added below.
+
+```
+export const view = {
+	label: 'View',
+	submenu: [{
+		label: 'Toggle Developer Tools',
+		accelerator: (() => {
+			if (process.platform === 'darwin') {
+	        		return 'Alt+Command+I';
+	        	}
+	        	return 'Ctrl+Shift+I';
+	      	})(),
+	      	click: (item, focusedWindow) => {
+	        	if (focusedWindow) {
+	          		focusedWindow.toggleDevTools();
+	        	}
+	      	},
+	}]
+};
+```
+
+And then add the following to the `generateDefaultTemplate` function.
+
+```
+template.push(view);
+```
+
+Once the user has selected a file, what do we do? We move on to Steps 2 and 3 of the list above. We will need a way to load the JSON from a file. To do this, let's create a new file.
 
 ```
 touch src/main/launch.js
@@ -857,6 +887,12 @@ Now that we have our component, we will need to render it inside the `#div` elem
 npm install react-dom --save
 ```
 
+Now, we'll create a new file inside `src/renderer` for loading the
+component into our index file.
+
+```
+touch src/renderer/app.js
+```
 
 Create a notebook node
 Attach the store to the notebook node
